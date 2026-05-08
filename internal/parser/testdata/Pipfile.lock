@@ -1,0 +1,28 @@
+{
+    "_meta": {
+        "hash": {"sha256": "abc123"},
+        "pipfile-spec": 6,
+        "requires": {"python_version": "3.11"},
+        "sources": [{"name": "pypi", "url": "https://pypi.org/simple", "verify_ssl": true}]
+    },
+    "default": {
+        "requests": {
+            "hashes": ["sha256:abc"],
+            "version": "==2.31.0"
+        },
+        "urllib3": {
+            "hashes": ["sha256:def"],
+            "version": "==2.2.1"
+        }
+    },
+    "develop": {
+        "pytest": {
+            "hashes": ["sha256:ghi"],
+            "version": "==7.4.0"
+        },
+        "local-pkg": {
+            "editable": true,
+            "path": "."
+        }
+    }
+}

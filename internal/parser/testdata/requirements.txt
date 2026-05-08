@@ -1,0 +1,8 @@
+# project requirements
+requests==2.31.0
+flask==3.0.3  # web framework
+django>=4.2,<5.0
+urllib3==2.0.7
+-r base.txt
+-e git+https://github.com/example/repo.git#egg=example
+requests[security]==2.31.0

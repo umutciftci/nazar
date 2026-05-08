@@ -1,0 +1,21 @@
+lockfileVersion: '9.0'
+
+importers:
+  .:
+    dependencies:
+      lodash:
+        specifier: ^4.17.20
+        version: 4.17.21
+      react:
+        specifier: ^18.0.0
+        version: 18.2.0
+
+packages:
+  lodash@4.17.21:
+    resolution: {integrity: sha512-abc==}
+
+  react@18.2.0:
+    resolution: {integrity: sha512-def==}
+
+  '@scope/utils@1.2.3':
+    resolution: {integrity: sha512-ghi==}
