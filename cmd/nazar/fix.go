@@ -54,16 +54,23 @@ func newFixCmd() *cobra.Command {
 	flags := &fixFlags{}
 
 	cmd := &cobra.Command{
-		Use:   "fix <path>",
+		Use:   "fix [path]",
 		Short: "Interactively upgrade vulnerable packages",
-		Long: "Fix scans the given directory, finds every package with a known fix version,\n" +
-			"and lets you choose which ones to upgrade. Lockfiles are backed up before any\n" +
-			"changes so you can always run `nazar fix --rollback` to undo.\n\n" +
+		Long: "Fix scans the given directory (default: current working directory), finds every\n" +
+			"package with a known fix version, and lets you choose which ones to upgrade.\n" +
+			"Lockfiles are backed up before any changes so you can always run\n" +
+			"`nazar fix --rollback` to undo.\n\n" +
 			"This command runs the appropriate package manager (npm, yarn, pnpm, poetry,\n" +
 			"uv, pipenv, go, cargo) — make sure the relevant tool is on your PATH.",
-		Args: cobra.ExactArgs(1),
+		Args: cobra.MaximumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return runFix(cmd, args[0], flags)
+			target := "."
+			if len(args) > 0 {
+				target = args[0]
+			} else if cwd, err := os.Getwd(); err == nil {
+				target = cwd
+			}
+			return runFix(cmd, target, flags)
 		},
 	}
 
@@ -510,7 +517,7 @@ func applyFixes(cmd *cobra.Command, root string, groups []fixGroup, flags *fixFl
 	fmt.Fprintln(w)
 
 	for _, g := range groups {
-		fmt.Fprintf(w, "%s  %s@%s → %s\n",
+		fmt.Fprintf(w, "%s  %s → %s  %s\n",
 			lipgloss.NewStyle().Bold(true).Render(g.PackageName),
 			mutedFixStyle.Render(g.OldVersion),
 			lipgloss.NewStyle().Foreground(lipgloss.Color("46")).Render(g.FixedIn),
@@ -527,7 +534,11 @@ func applyFixes(cmd *cobra.Command, root string, groups []fixGroup, flags *fixFl
 				FixedIn:      g.FixedIn,
 			}
 
-			result := fixer.Apply(action, sessionDir)
+			result := fixer.ApplyWithOptions(action, sessionDir, fixer.ApplyOptions{
+				Progress: func(format string, args ...any) {
+					fmt.Fprintf(cmd.ErrOrStderr(), "  "+format+"\n", args...)
+				},
+			})
 
 			mu.Lock()
 			if result.Backup.BackupPath != "" {
@@ -582,7 +593,7 @@ func applyFixes(cmd *cobra.Command, root string, groups []fixGroup, flags *fixFl
 		} else {
 			fmt.Fprintln(w)
 			fmt.Fprintln(w, mutedFixStyle.Render(
-				fmt.Sprintf("Backup saved. Run `nazar fix --rollback %s` to undo.", root),
+				"Backup saved. Run `nazar fix --rollback` to undo.",
 			))
 		}
 	}

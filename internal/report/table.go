@@ -497,7 +497,7 @@ func summaryLine(numProjects, totalPkgs, totalDirect, totalFixable int, totals s
 		totals.Total(), totals.Critical, totals.High, totals.Medium, totals.Low, totals.Unknown,
 	)
 	if totalFixable > 0 {
-		base += fmt.Sprintf(" %d package(s) have a known fix — run `nazar fix` to upgrade.", totalFixable)
+		base += fmt.Sprintf(" %d package(s) have a known fix — run `nazar fix .` to upgrade.", totalFixable)
 	}
 	return base
 }

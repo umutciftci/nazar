@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.4] - 2026-05-23
+
+### Fixed
+
+- `nazar fix` accepts no path argument (defaults to current working directory), matching the scan summary hint
+- `nazar fix` streams package manager output during upgrades so long installs are visible instead of appearing hung
+- Correct version display when applying fixes (`old → new` instead of `old@new`)
+- `nazar fix --rollback` no longer requires a path argument in the backup reminder message
+
+### Maintenance
+
+- CI workflows: tighten permissions for OpenSSF Scorecard compliance
+
+## [0.1.3] - 2026-05-23
+
+### Maintenance
+
+- Bump `github/codeql-action` 3 → 4
+- Bump `ossf/scorecard-action` 2.4.0 → 2.4.3
+- Bump `goreleaser/goreleaser-action` 6 → 7
+
 ## [0.1.1] - 2026-05-23
 
 ### Fixed
@@ -44,6 +65,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Cross-project hotspot detection
 - Webhook notifications (Slack-compatible)
 
-[Unreleased]: https://github.com/umutciftci/nazar/compare/v0.1.1...HEAD
+[Unreleased]: https://github.com/umutciftci/nazar/compare/v0.1.4...HEAD
+[0.1.4]: https://github.com/umutciftci/nazar/compare/v0.1.3...v0.1.4
+[0.1.3]: https://github.com/umutciftci/nazar/compare/v0.1.1...v0.1.3
 [0.1.1]: https://github.com/umutciftci/nazar/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/umutciftci/nazar/releases/tag/v0.1.0

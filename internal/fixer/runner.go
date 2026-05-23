@@ -38,10 +38,21 @@ func DryRun(a Action) string {
 	return strings.Join(cmd, " ")
 }
 
+// ApplyOptions controls how Apply runs the package manager subprocess.
+type ApplyOptions struct {
+	// Progress writes status lines (command start). Nil suppresses them.
+	Progress func(format string, args ...any)
+}
+
 // Apply backs up the lockfile then runs the appropriate package manager.
 // If the package manager is not installed the backup is still created and
 // the error makes that clear so the user can fix manually.
 func Apply(a Action, backupDir string) ApplyResult {
+	return ApplyWithOptions(a, backupDir, ApplyOptions{})
+}
+
+// ApplyWithOptions is like Apply but can emit progress and stream subprocess output.
+func ApplyWithOptions(a Action, backupDir string, opts ApplyOptions) ApplyResult {
 	backup, err := BackupLockfile(a.LockfilePath, backupDir)
 	if err != nil {
 		return ApplyResult{Action: a, Err: fmt.Errorf("backup: %w", err)}
@@ -68,13 +79,18 @@ func Apply(a Action, backupDir string) ApplyResult {
 
 	c := exec.Command(args[0], args[1:]...)
 	c.Dir = a.ProjectDir
-	out, err := c.CombinedOutput()
-	outStr := strings.TrimSpace(string(out))
+	if opts.Progress != nil {
+		opts.Progress("running %s…", strings.Join(args, " "))
+	}
+	// Stream to stderr so npm/yarn/pnpm progress bars stay visible.
+	c.Stdout = os.Stderr
+	c.Stderr = os.Stderr
+	err = c.Run()
 	if err != nil {
-		return ApplyResult{Action: a, Backup: backup, Output: outStr,
+		return ApplyResult{Action: a, Backup: backup,
 			Err: fmt.Errorf("%s: %w", strings.Join(args, " "), err)}
 	}
-	return ApplyResult{Action: a, Backup: backup, Output: outStr}
+	return ApplyResult{Action: a, Backup: backup}
 }
 
 // buildCommand returns the argv for the package manager upgrade. Returns nil
