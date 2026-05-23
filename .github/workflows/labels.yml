@@ -7,11 +7,12 @@ on:
       - .github/labels.yml
   workflow_dispatch:
 
-permissions:
-  issues: write
+permissions: read-all
 
 jobs:
   sync:
+    permissions:
+      issues: write
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
