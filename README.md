@@ -1,5 +1,13 @@
 # nazar 🧿
 
+[![test](https://github.com/umutciftci/nazar/actions/workflows/test.yml/badge.svg)](https://github.com/umutciftci/nazar/actions/workflows/test.yml)
+[![lint](https://github.com/umutciftci/nazar/actions/workflows/lint.yml/badge.svg)](https://github.com/umutciftci/nazar/actions/workflows/lint.yml)
+[![release](https://github.com/umutciftci/nazar/actions/workflows/release.yml/badge.svg)](https://github.com/umutciftci/nazar/actions/workflows/release.yml)
+[![Go Report Card](https://goreportcard.com/badge/github.com/umutciftci/nazar)](https://goreportcard.com/report/github.com/umutciftci/nazar)
+[![Go Version](https://img.shields.io/github/go-mod/go-version/umutciftci/nazar)](https://github.com/umutciftci/nazar/blob/master/go.mod)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/umutciftci/nazar/badge)](https://securityscorecards.dev/viewer/?uri=github.com/umutciftci/nazar)
+
 > The evil eye that watches over your dependencies.
 
 **nazar** is a multi-project, zero-config, local-first vulnerability scanner. One command — every project on your machine, every ecosystem, one consolidated report.
@@ -16,14 +24,76 @@ nazar walks your filesystem, finds every project across multiple ecosystems, and
 
 ## Install
 
-Build from source (Go 1.21+ required):
+### Homebrew (macOS / Linux) — recommended
+
+One command (tap is resolved automatically):
+
+```bash
+brew install umutciftci/nazar/nazar
+```
+
+After the first install, you can add the tap once and use shorter commands next time:
+
+```bash
+brew tap umutciftci/nazar
+brew install nazar    # first time via tap
+brew upgrade nazar    # later updates
+```
+
+The tap repo [`homebrew-nazar`](https://github.com/umutciftci/homebrew-nazar) is updated automatically on each release (`Formula/nazar.rb`).
+
+### Scoop (Windows) — recommended on Windows
+
+```powershell
+scoop bucket add nazar https://github.com/umutciftci/scoop-nazar
+scoop install nazar
+scoop update nazar
+```
+
+The bucket repo [`scoop-nazar`](https://github.com/umutciftci/scoop-nazar) is updated automatically on each release.
+
+On Windows you can also use [GitHub Releases](https://github.com/umutciftci/nazar/releases) or `go install` below.
+
+### Go install
+
+```bash
+go install github.com/umutciftci/nazar/cmd/nazar@latest
+```
+
+Requires Go 1.24+ (see [`go.mod`](go.mod)).
+
+### Docker
+
+```bash
+docker run --rm -v "$PWD:/scan" ghcr.io/umutciftci/nazar:latest scan /scan
+```
+
+### Pre-built binaries
+
+Download the archive for your platform from [GitHub Releases](https://github.com/umutciftci/nazar/releases), extract, and put `nazar` on your `PATH`.
+
+### Build from source
 
 ```bash
 git clone https://github.com/umutciftci/nazar.git
 cd nazar
 go build -o nazar ./cmd/nazar
-sudo mv nazar /usr/local/bin/nazar
+sudo mv nazar /usr/local/bin/nazar   # optional
 ```
+
+## How does nazar compare?
+
+| | **nazar** | Trivy | Snyk CLI | osv-scanner |
+|---|:---:|:---:|:---:|:---:|
+| Multi-project filesystem walk | yes | manual | manual | manual |
+| Zero-config (no account) | yes | partial | no | yes |
+| Local-first / no telemetry | yes | partial | no | yes |
+| Ecosystems in one report | 7+ | many | many | many |
+| CI exit codes (`--fail-on`) | yes | yes | yes | yes |
+| Interactive `fix` with rollback | yes | no | yes | no |
+| Cross-project hotspot view | yes | no | no | no |
+
+nazar is not a replacement for container/image scanners — it focuses on **dependency lockfiles across many projects on disk**.
 
 ## Commands
 
@@ -402,8 +472,42 @@ Config is stored at `~/.config/nazar/config.json`. CLI flags always override con
 ```bash
 go test -race ./...
 go vet ./...
+golangci-lint run    # optional locally; required in CI
 go build -o nazar ./cmd/nazar
 ```
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the full contributor guide, project layout, and how to add a new ecosystem.
+
+### CI integration examples
+
+Ready-to-copy workflows live under [`examples/`](examples/):
+
+- [GitHub Actions](examples/github-actions/nazar-ci.yml)
+- [GitLab CI](examples/gitlab-ci/.gitlab-ci.yml)
+- [pre-commit](examples/pre-commit/.pre-commit-hooks.yaml)
+
+## Contributing
+
+We welcome bug reports, parsers for new ecosystems, docs, and tests. Please read [CONTRIBUTING.md](CONTRIBUTING.md) and the [Code of Conduct](CODE_OF_CONDUCT.md) before opening a PR.
+
+Good starting points: issues labeled [`good first issue`](https://github.com/umutciftci/nazar/labels/good%20first%20issue) or [`help wanted`](https://github.com/umutciftci/nazar/labels/help%20wanted).
+
+**Security:** do not open public issues for vulnerabilities in nazar — see [SECURITY.md](SECURITY.md).
+
+## Verifying releases
+
+Official release binaries are built by GitHub Actions. Checksums are in `checksums.txt` on each [release](https://github.com/umutciftci/nazar/releases). When cosign signatures are published:
+
+```bash
+# Download checksums.txt, checksums.txt.sig, and checksums.txt.pem from the release page, then:
+cosign verify-blob checksums.txt \
+  --certificate checksums.txt.pem \
+  --signature checksums.txt.sig \
+  --certificate-identity-regexp 'https://github.com/umutciftci/nazar/.github/workflows/release.yml@refs/tags/v*' \
+  --certificate-oidc-issuer 'https://token.actions.githubusercontent.com'
+```
+
+SBOM files (`*.spdx.json`) are attached to each release archive for supply-chain auditing.
 
 ## License
 

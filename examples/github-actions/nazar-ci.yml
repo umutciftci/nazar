@@ -1,0 +1,30 @@
+# Copy to .github/workflows/nazar.yml in your project.
+name: nazar
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install nazar
+        run: go install github.com/umutciftci/nazar/cmd/nazar@latest
+
+      - name: Vulnerability scan
+        run: nazar ci . --fail-on high
+
+      - name: SARIF report
+        run: nazar ci . --sarif -o nazar.sarif
+        if: always()
+
+      - name: Upload SARIF
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: nazar.sarif
+        if: always()

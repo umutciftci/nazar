@@ -1,0 +1,23 @@
+title: Q&A
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Ask a question about using nazar, CI integration, or interpreting scan results.
+
+        **Before posting:** check the [README](https://github.com/umutciftci/nazar#readme) and existing [issues](https://github.com/umutciftci/nazar/issues).
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Your question
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: nazar version, OS, command you ran, relevant output.
+    validations:
+      required: false

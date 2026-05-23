@@ -1,0 +1,13 @@
+# Snippet for .gitlab-ci.yml — merge into your pipeline.
+nazar-scan:
+  image: golang:1.24
+  stage: test
+  script:
+    - go install github.com/umutciftci/nazar/cmd/nazar@latest
+    - nazar ci . --fail-on high --sarif -o nazar.sarif
+  artifacts:
+    when: always
+    reports:
+      sast: nazar.sarif
+    paths:
+      - nazar.sarif

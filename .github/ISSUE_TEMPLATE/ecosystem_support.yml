@@ -1,0 +1,46 @@
+name: Ecosystem support
+description: Request support for a new package manager or lockfile format
+title: "[ecosystem]: "
+labels: ["enhancement", "help wanted"]
+body:
+  - type: input
+    id: ecosystem
+    attributes:
+      label: Ecosystem name
+      placeholder: Maven, Gradle, Swift PM, ...
+    validations:
+      required: true
+
+  - type: input
+    id: lockfile
+    attributes:
+      label: Lockfile / manifest files
+      description: e.g. pom.xml, Package.resolved
+      placeholder: pom.xml + pom.lock (if any)
+    validations:
+      required: true
+
+  - type: input
+    id: osv_id
+    attributes:
+      label: OSV ecosystem identifier (if known)
+      description: See https://ossf.github.io/osv-schema/#defined-ecosystems
+      placeholder: Maven
+    validations:
+      required: false
+
+  - type: textarea
+    id: example
+    attributes:
+      label: Example project or lockfile snippet
+      description: Link to a public repo or paste a minimal fixture.
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: contribution
+    attributes:
+      label: Contribution
+      options:
+        - label: I can contribute a parser PR
+        - label: I can provide test fixtures only

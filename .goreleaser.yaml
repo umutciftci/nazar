@@ -42,12 +42,71 @@ checksum:
   name_template: "checksums.txt"
   algorithm: sha256
 
+sboms:
+  - artifacts: archive
+
+signs:
+  - cmd: cosign
+    certificate-identity-regexp: "https://github.com/umutciftci/nazar/.github/workflows/release.yml@refs/tags/v*"
+    certificate-oidc-issuer: "https://token.actions.githubusercontent.com"
+    artifacts: checksum
+    args:
+      - sign-blob
+      - "--yes"
+      - "${artifact}"
+      - "--output-signature"
+      - "${signature}"
+      - "--output-certificate"
+      - "${certificate}"
+
 release:
   github:
     owner: umutciftci
     name: nazar
   draft: false
-  prerelease: auto   # v0.x tags are marked pre-release automatically
+  prerelease: auto
+
+dockers:
+  - image_templates:
+      - "ghcr.io/umutciftci/nazar:{{ .Tag }}-amd64"
+      - "ghcr.io/umutciftci/nazar:v{{ .Major }}.{{ .Minor }}.{{ .Patch }}-amd64"
+    dockerfile: Dockerfile
+    use: buildx
+    build_flag_templates:
+      - "--pull"
+      - "--label=org.opencontainers.image.title=nazar"
+      - "--label=org.opencontainers.image.description=Multi-project vulnerability scanner"
+      - "--label=org.opencontainers.image.url=https://github.com/umutciftci/nazar"
+      - "--label=org.opencontainers.image.source=https://github.com/umutciftci/nazar"
+      - "--label=org.opencontainers.image.version={{ .Version }}"
+      - "--label=org.opencontainers.image.revision={{ .FullCommit }}"
+      - "--platform=linux/amd64"
+    goarch: amd64
+  - image_templates:
+      - "ghcr.io/umutciftci/nazar:{{ .Tag }}-arm64"
+      - "ghcr.io/umutciftci/nazar:v{{ .Major }}.{{ .Minor }}.{{ .Patch }}-arm64"
+    dockerfile: Dockerfile
+    use: buildx
+    build_flag_templates:
+      - "--pull"
+      - "--label=org.opencontainers.image.title=nazar"
+      - "--label=org.opencontainers.image.description=Multi-project vulnerability scanner"
+      - "--label=org.opencontainers.image.url=https://github.com/umutciftci/nazar"
+      - "--label=org.opencontainers.image.source=https://github.com/umutciftci/nazar"
+      - "--label=org.opencontainers.image.version={{ .Version }}"
+      - "--label=org.opencontainers.image.revision={{ .FullCommit }}"
+      - "--platform=linux/arm64"
+    goarch: arm64
+
+docker_manifests:
+  - name_template: "ghcr.io/umutciftci/nazar:{{ .Tag }}"
+    image_templates:
+      - "ghcr.io/umutciftci/nazar:{{ .Tag }}-amd64"
+      - "ghcr.io/umutciftci/nazar:{{ .Tag }}-arm64"
+  - name_template: "ghcr.io/umutciftci/nazar:latest"
+    image_templates:
+      - "ghcr.io/umutciftci/nazar:{{ .Tag }}-amd64"
+      - "ghcr.io/umutciftci/nazar:{{ .Tag }}-arm64"
 
 brews:
   - name: nazar
@@ -67,3 +126,34 @@ brews:
       bin.install "nazar"
     test: |
       system "#{bin}/nazar", "--version"
+
+scoops:
+  - name: nazar
+    repository:
+      owner: umutciftci
+      name: scoop-nazar
+      branch: main
+      token: "{{ .Env.SCOOP_BUCKET_TOKEN }}"
+    commit_author:
+      name: goreleaserbot
+      email: bot@goreleaser.com
+    commit_msg_template: "chore: update nazar to {{ .Tag }}"
+    homepage: "https://github.com/umutciftci/nazar"
+    description: "Multi-project, zero-config, local-first vulnerability scanner."
+    license: "MIT"
+    persist: []
+
+nfpms:
+  - id: nazar
+    package_name: nazar
+    builds:
+      - nazar
+    vendor: umutciftci
+    homepage: "https://github.com/umutciftci/nazar"
+    maintainer: "Umut Ciftci <umutciftci@users.noreply.github.com>"
+    description: "Multi-project, zero-config, local-first vulnerability scanner."
+    license: MIT
+    formats:
+      - deb
+      - rpm
+    bindir: /usr/bin

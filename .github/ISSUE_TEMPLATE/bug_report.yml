@@ -1,0 +1,84 @@
+name: Bug report
+description: Something is broken or produces wrong results
+title: "[bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug. The more detail you provide, the faster we can fix it.
+
+  - type: input
+    id: version
+    attributes:
+      label: nazar version
+      description: Output of `nazar --version`
+      placeholder: "nazar version v0.1.0"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      options:
+        - macOS
+        - Linux
+        - Windows
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: command
+    attributes:
+      label: Command you ran
+      placeholder: nazar scan ./my-project --detail
+    validations:
+      required: true
+
+  - type: dropdown
+    id: ecosystem
+    attributes:
+      label: Ecosystem (if applicable)
+      options:
+        - npm
+        - PyPI
+        - Go
+        - Rust (crates.io)
+        - RubyGems
+        - Packagist (PHP)
+        - NuGet (.NET)
+        - Multiple / not sure
+        - N/A
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect?
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: What happened instead?
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      description: Minimal lockfile snippet or a link to a public repo that reproduces the issue.
+      render: shell
+    validations:
+      required: false
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Additional context
+      description: Full terminal output, stack traces, or screenshots.
+    validations:
+      required: false

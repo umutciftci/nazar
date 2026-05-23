@@ -1,0 +1,9 @@
+# Add to your .pre-commit-config.yaml repos list.
+- repo: local
+  hooks:
+    - id: nazar-scan
+      name: nazar vulnerability scan
+      entry: nazar ci .
+      language: system
+      pass_filenames: false
+      stages: [pre-push]

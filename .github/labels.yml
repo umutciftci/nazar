@@ -1,0 +1,84 @@
+- name: bug
+  color: d73a4a
+  description: Something is not working
+
+- name: enhancement
+  color: a2eeef
+  description: New feature or request
+
+- name: documentation
+  color: 0075ca
+  description: Improvements or additions to documentation
+
+- name: good first issue
+  color: 7057ff
+  description: Good for newcomers
+
+- name: help wanted
+  color: 008672
+  description: Extra attention is needed
+
+- name: dependencies
+  color: 0366d6
+  description: Pull requests that update a dependency file
+
+- name: chore
+  color: cfd3d7
+  description: Maintenance and tooling
+
+- name: ecosystem:npm
+  color: cb3837
+  description: npm / Node.js
+
+- name: ecosystem:pypi
+  color: 3776ab
+  description: Python / PyPI
+
+- name: ecosystem:go
+  color: 00add8
+  description: Go modules
+
+- name: ecosystem:rust
+  color: dea584
+  description: Rust / crates.io
+
+- name: ecosystem:ruby
+  color: cc342d
+  description: RubyGems
+
+- name: ecosystem:php
+  color: 777bb4
+  description: Packagist / Composer
+
+- name: ecosystem:dotnet
+  color: 512bd4
+  description: NuGet / .NET
+
+- name: area:scanner
+  color: bfdadc
+  description: Filesystem scanner
+
+- name: area:parser
+  color: bfdadc
+  description: Lockfile parsers
+
+- name: area:osv
+  color: bfdadc
+  description: OSV client and cache
+
+- name: area:report
+  color: bfdadc
+  description: Output formats
+
+- name: area:fixer
+  color: bfdadc
+  description: nazar fix command
+
+- name: priority:low
+  color: cccccc
+
+- name: priority:medium
+  color: fbca04
+
+- name: priority:high
+  color: b60205
