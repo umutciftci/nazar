@@ -72,6 +72,22 @@ func TestRenderText_IncludesProjectsAndCounts(t *testing.T) {
 	}
 }
 
+func TestRenderText_QuietMode(t *testing.T) {
+	var buf bytes.Buffer
+	RenderText(&buf, "/tmp/scan", false, sampleResults(), RenderOptions{Quiet: true})
+	out := buf.String()
+
+	if strings.Contains(out, "nazar 🧿 — scan results") {
+		t.Errorf("quiet mode must not print table header, got:\n%s", out)
+	}
+	if strings.Contains(out, "PROJECT") {
+		t.Errorf("quiet mode must not print table columns, got:\n%s", out)
+	}
+	if !strings.Contains(out, "2 project(s)") {
+		t.Errorf("quiet mode should print summary line, got:\n%s", out)
+	}
+}
+
 func TestRenderText_OfflineMode(t *testing.T) {
 	var buf bytes.Buffer
 	RenderText(&buf, "/tmp/scan", true, sampleResults(), RenderOptions{})

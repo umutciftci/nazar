@@ -123,7 +123,7 @@ var (
 			Bold(true)
 
 	idStyle = lipgloss.NewStyle().
-			Foreground(lipgloss.Color("203"))
+		Foreground(lipgloss.Color("203"))
 
 	pkgRefStyle = lipgloss.NewStyle().
 			Foreground(lipgloss.Color("250")).
@@ -199,14 +199,14 @@ func tally(pvs []PackageVulns) severityCounts {
 
 // RenderText writes a human-friendly summary of the scan to w.
 func RenderText(w io.Writer, root string, offline bool, results []Result, opts RenderOptions) {
-	fmt.Fprintln(w, headerStyle.Render("nazar 🧿 — scan results"))
-	fmt.Fprintln(w, mutedStyle.Render("scanned: "+root))
-	if offline {
-		fmt.Fprintln(w, mutedStyle.Render("offline mode — OSV lookup skipped"))
-	}
-	fmt.Fprintln(w)
-
 	if len(results) == 0 {
+		if opts.Quiet {
+			fmt.Fprintln(w, mutedStyle.Render("No projects detected."))
+			return
+		}
+		fmt.Fprintln(w, headerStyle.Render("nazar 🧿 — scan results"))
+		fmt.Fprintln(w, mutedStyle.Render("scanned: "+root))
+		fmt.Fprintln(w)
 		fmt.Fprintln(w, mutedStyle.Render("No projects detected."))
 		return
 	}
@@ -348,6 +348,13 @@ func RenderText(w io.Writer, root string, offline bool, results []Result, opts R
 		fmt.Fprintln(w, summaryLine(len(allRows), totalPkgs, totalDirect, totalFixable, totals, offline))
 		return
 	}
+
+	fmt.Fprintln(w, headerStyle.Render("nazar 🧿 — scan results"))
+	fmt.Fprintln(w, mutedStyle.Render("scanned: "+root))
+	if offline {
+		fmt.Fprintln(w, mutedStyle.Render("offline mode — OSV lookup skipped"))
+	}
+	fmt.Fprintln(w)
 
 	// --vuln-only: hide clean projects from the display table only.
 	if opts.VulnOnly && !offline {
@@ -549,7 +556,7 @@ func renderVulnDetail(w io.Writer, results []Result, root string, minSeverity os
 			for _, v := range vsorted {
 				entry := idStyle.Render(v.ID)
 				if v.FixedIn != "" {
-					entry += mutedStyle.Render(" →"+v.FixedIn)
+					entry += mutedStyle.Render(" →" + v.FixedIn)
 				}
 				ids = append(ids, entry)
 			}
@@ -665,7 +672,7 @@ func renderHotspots(w io.Writer, results []Result) {
 	for _, h := range hotspots {
 		fixHint := ""
 		if h.fixedIn != "" {
-			fixHint = mutedStyle.Render("  →"+h.fixedIn)
+			fixHint = mutedStyle.Render("  →" + h.fixedIn)
 		}
 		ids := make([]string, 0, len(h.vulnIDs))
 		for _, id := range h.vulnIDs {

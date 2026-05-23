@@ -416,7 +416,7 @@ Notes:
 ### Skipped directories
 
 ```
-node_modules  .git  vendor  target  dist  build  .next  __pycache__  .venv  venv
+node_modules  .git  vendor  target  dist  build  .next  __pycache__  .venv  venv  testdata  fixtures
 ```
 
 Add more with `--exclude`:

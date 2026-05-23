@@ -49,6 +49,9 @@ var skipDirs = map[string]struct{}{
 	"__pycache__":  {},
 	".venv":        {},
 	"venv":         {},
+	// Fixture trees (Go/Ruby/Python tests) are not real deployable projects.
+	"testdata": {},
+	"fixtures": {},
 }
 
 // Options controls optional scanner behaviour.

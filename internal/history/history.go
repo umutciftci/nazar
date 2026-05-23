@@ -15,12 +15,12 @@ import (
 
 // Item is one (project, package, vuln) triple stored in history.
 type Item struct {
-	Project   string       `json:"project"`
-	Package   string       `json:"package"`
-	Version   string       `json:"version"`
-	VulnID    string       `json:"vuln_id"`
-	Severity  osv.Severity `json:"severity"`
-	FixedIn   string       `json:"fixed_in,omitempty"`
+	Project  string       `json:"project"`
+	Package  string       `json:"package"`
+	Version  string       `json:"version"`
+	VulnID   string       `json:"vuln_id"`
+	Severity osv.Severity `json:"severity"`
+	FixedIn  string       `json:"fixed_in,omitempty"`
 }
 
 // Snapshot is the full state of a scan at a point in time.

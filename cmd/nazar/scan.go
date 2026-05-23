@@ -64,7 +64,11 @@ type errVulnsFound struct {
 }
 
 func (e *errVulnsFound) Error() string {
-	return fmt.Sprintf("%d vulnerability/vulnerabilities at or above %s found (--fail-on triggered)", e.count, e.threshold)
+	noun := "vulnerabilities"
+	if e.count == 1 {
+		noun = "vulnerability"
+	}
+	return fmt.Sprintf("%d %s at or above %s found (--fail-on triggered)", e.count, noun, e.threshold)
 }
 
 // newScanCmd builds the `nazar scan <path>` subcommand.
@@ -206,12 +210,12 @@ func runScan(cmd *cobra.Command, targets []string, flags *scanFlags) error {
 				logProgress(cmd, flags, fmt.Sprintf("severity + fix info (%d CVEs, all cached)…", len(ids)))
 			}
 			var onProgress osv.ProgressFunc
-			if !flags.jsonOutput && !flags.sarifOutput && uncached > 0 {
+			if !flags.quiet && !flags.jsonOutput && !flags.sarifOutput && uncached > 0 {
 				onProgress = makeProgressPrinter(cmd)
 			}
 			details, err := fetchSeverity(cmd.Context(), ids, flags, onProgress)
 			// Ensure the inline progress counter doesn't bleed into the next line.
-			if !flags.jsonOutput && !flags.sarifOutput && uncached > 0 {
+			if !flags.quiet && !flags.jsonOutput && !flags.sarifOutput && uncached > 0 {
 				fmt.Fprintln(cmd.ErrOrStderr())
 			}
 			if err != nil {
@@ -369,9 +373,10 @@ func runScan(cmd *cobra.Command, targets []string, flags *scanFlags) error {
 
 // logProgress writes a status line to stderr (suppressed for machine-readable output).
 func logProgress(cmd *cobra.Command, flags *scanFlags, msg string) {
-	if !flags.jsonOutput && !flags.sarifOutput && !flags.csvOutput {
-		fmt.Fprintln(cmd.ErrOrStderr(), " →", msg)
+	if flags.quiet || flags.jsonOutput || flags.sarifOutput || flags.csvOutput {
+		return
 	}
+	fmt.Fprintln(cmd.ErrOrStderr(), " →", msg)
 }
 
 // makeProgressPrinter returns a ProgressFunc that prints an inline counter to
@@ -515,7 +520,9 @@ func buildResultsWithIgnore(
 	vulnsByCoord map[osv.Coordinate][]osv.Vuln,
 	detailsByID map[string]*osv.VulnDetail,
 	flags *scanFlags,
-	ignoreSet interface{ Match(name, version, id string) bool },
+	ignoreSet interface {
+		Match(name, version, id string) bool
+	},
 ) []report.Result {
 	results := make([]report.Result, 0, len(parsedProjects))
 	for _, pp := range parsedProjects {

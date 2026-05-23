@@ -7,17 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-05-23
+
+### Fixed
+
+- Skip `testdata` and `fixtures` directories during filesystem walk (avoids scanning parser fixtures as real projects)
+- `--quiet` and `nazar ci` now emit a single summary line without the scan results banner or progress spam
+- `nazar show` returns a clear error for invalid or withdrawn vulnerability IDs
+- Correct pluralization in `--fail-on` exit messages
+- Simplify `history.Compare` when no previous snapshot exists
+
+### Changed
+
+- README: document `testdata` and `fixtures` in skipped directories list
+
+## [0.1.0] - 2026-05-23
+
 ### Added
 
 - Community files: CONTRIBUTING, CODE_OF_CONDUCT, SECURITY, issue/PR templates
 - CI: multi-OS test matrix, golangci-lint, CodeQL, OpenSSF Scorecard, Dependabot
 - Release pipeline: SBOM, cosign signatures, Docker image (GHCR), Homebrew tap + Scoop bucket, deb/rpm packages
 - Integration examples under `examples/`
-
-## [0.1.0] - 2026-05-23
-
-### Added
-
 - `nazar scan` — multi-project filesystem walk with consolidated vulnerability report
 - `nazar ci` — CI-mode scan with `--fail-on high` default
 - `nazar fix` — interactive package upgrades with backup and rollback
@@ -33,5 +44,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Cross-project hotspot detection
 - Webhook notifications (Slack-compatible)
 
-[Unreleased]: https://github.com/umutciftci/nazar/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/umutciftci/nazar/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/umutciftci/nazar/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/umutciftci/nazar/releases/tag/v0.1.0

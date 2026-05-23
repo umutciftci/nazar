@@ -85,7 +85,10 @@ func TestScan_RequiresBothPackageAndLockfile(t *testing.T) {
 
 func TestScan_SkipsKnownNoiseDirectories(t *testing.T) {
 	// Each "noise" dir contains a package.json+lockfile pair that should be ignored.
-	noise := []string{"node_modules", ".git", "vendor", "target", "dist", "build", ".next", "__pycache__", ".venv", "venv"}
+	noise := []string{
+		"node_modules", ".git", "vendor", "target", "dist", "build", ".next",
+		"__pycache__", ".venv", "venv", "testdata", "fixtures",
+	}
 	files := map[string]string{
 		"real/package.json":      "{}",
 		"real/package-lock.json": "{}",
@@ -112,9 +115,9 @@ func TestScan_NestedNPMProjects(t *testing.T) {
 	// A monorepo-style layout where nested projects exist outside node_modules.
 	// Both should be detected.
 	root := makeTree(t, map[string]string{
-		"package.json":                "{}",
-		"package-lock.json":           "{}",
-		"packages/api/package.json":   "{}",
+		"package.json":                   "{}",
+		"package-lock.json":              "{}",
+		"packages/api/package.json":      "{}",
 		"packages/api/package-lock.json": "{}",
 	})
 

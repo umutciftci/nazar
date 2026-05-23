@@ -50,6 +50,9 @@ func runShow(cmd *cobra.Command, id, cacheDir, osvBaseURL string, noCache bool) 
 	if !ok || d == nil {
 		return fmt.Errorf("vulnerability %s not found", id)
 	}
+	if strings.TrimSpace(d.Summary) == "" && len(d.Affected) == 0 && len(d.Severity) == 0 {
+		return fmt.Errorf("vulnerability %s: no OSV record (invalid ID or withdrawn entry)", id)
+	}
 
 	w := cmd.OutOrStdout()
 	sev := osv.DeriveSeverity(d)
