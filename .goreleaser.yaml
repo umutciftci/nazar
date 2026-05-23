@@ -47,17 +47,13 @@ sboms:
 
 signs:
   - cmd: cosign
-    certificate-identity-regexp: "https://github.com/umutciftci/nazar/.github/workflows/release.yml@refs/tags/v*"
-    certificate-oidc-issuer: "https://token.actions.githubusercontent.com"
+    signature: "${artifact}.sigstore.json"
     artifacts: checksum
     args:
       - sign-blob
-      - "--yes"
+      - "--bundle=${signature}"
       - "${artifact}"
-      - "--output-signature"
-      - "${signature}"
-      - "--output-certificate"
-      - "${certificate}"
+      - "--yes"
 
 release:
   github:
