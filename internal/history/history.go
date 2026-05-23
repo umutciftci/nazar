@@ -96,11 +96,7 @@ func Compare(prev, curr *Snapshot) Diff {
 	}
 
 	if prev == nil {
-		d := Diff{}
-		for _, it := range curr.Items {
-			d.New = append(d.New, it)
-		}
-		return d
+		return Diff{New: append([]Item(nil), curr.Items...)}
 	}
 
 	prevSet := make(map[string]Item, len(prev.Items))

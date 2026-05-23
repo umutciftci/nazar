@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"os"
 	"time"
 
@@ -91,11 +90,3 @@ func newCICmd() *cobra.Command {
 	return cmd
 }
 
-// ciSummaryLine builds the single-line CI summary printed by `nazar ci`.
-func ciSummaryLine(root string, projects, vulns int, failOnSev osv.Severity, clean bool) string {
-	if clean {
-		return fmt.Sprintf("✓ nazar: 0 vulnerabilities found in %d project(s) under %s", projects, root)
-	}
-	return fmt.Sprintf("✗ nazar: %d vulnerabilities found in %d project(s) under %s [fail-on: %s]",
-		vulns, projects, root, failOnSev)
-}
